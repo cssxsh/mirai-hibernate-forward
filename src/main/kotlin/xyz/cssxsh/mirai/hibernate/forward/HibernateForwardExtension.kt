@@ -34,7 +34,7 @@ public object HibernateForwardExtension : KotlinPlugin(
                     stream.filter { record ->
                         val chain = record.toMessageChain()
                         chain.findIsInstance<At>()?.target == sender.id
-                            && record.time <= queried.getOrDefault(key, Int.MAX_VALUE)
+                            && record.time < queried.getOrDefault(key, Int.MAX_VALUE)
                     }.findFirst().orElse(null)
                 } ?: return@query null
                 queried[key] = record.time
