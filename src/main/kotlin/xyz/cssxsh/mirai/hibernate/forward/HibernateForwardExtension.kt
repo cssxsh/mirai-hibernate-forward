@@ -14,7 +14,7 @@ public object HibernateForwardExtension : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-hibernate-forward",
         name = "mirai-hibernate-forward",
-        version = "0.0.1",
+        version = "0.0.2",
     ) {
         author("cssxsh")
 
