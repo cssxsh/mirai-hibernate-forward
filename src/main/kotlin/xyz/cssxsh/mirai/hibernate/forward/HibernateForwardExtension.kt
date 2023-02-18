@@ -12,7 +12,7 @@ import java.util.*
 
 public object HibernateForwardExtension : KotlinPlugin(
     JvmPluginDescription(
-        id = "xyz.cssxsh.mirai.mirai-hibernate-forward",
+        id = "xyz.cssxsh.mirai.plugin.mirai-hibernate-forward",
         name = "mirai-hibernate-forward",
         version = "0.0.1",
     ) {

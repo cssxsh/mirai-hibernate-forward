@@ -5,7 +5,7 @@
 相关项目:  
 [Mirai Hibernate Plugin](https://github.com/cssxsh/mirai-hibernate-plugin) 前置插件，用于 Hibernate ORM 框架的初始化
 
-权限ID `xyz.cssxsh.mirai.mirai-hibernate-forward:*`
+权限ID `xyz.cssxsh.mirai.plugin.mirai-hibernate-forward:*`
 
 ## 关键词
 
