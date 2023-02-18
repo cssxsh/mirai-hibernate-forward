@@ -9,7 +9,6 @@ import net.mamoe.mirai.event.*
 import net.mamoe.mirai.message.data.*
 import xyz.cssxsh.mirai.hibernate.*
 import java.util.*
-import kotlin.jvm.optionals.getOrNull
 
 public object HibernateForwardExtension : KotlinPlugin(
     JvmPluginDescription(
@@ -45,6 +44,8 @@ public object HibernateForwardExtension : KotlinPlugin(
                     addAll(prev.subList(0, prev.size.coerceAtMost(9)).asReversed())
                     addAll(next.asReversed().subList(0, next.size.coerceAtMost(9)))
                 }
+
+                queried[key] = records.minOfOrNull { it.time } ?: record.time
 
                 records.toForwardMessage(subject)
             }
