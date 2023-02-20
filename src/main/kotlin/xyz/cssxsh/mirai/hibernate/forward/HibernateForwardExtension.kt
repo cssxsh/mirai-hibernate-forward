@@ -48,7 +48,7 @@ public object HibernateForwardExtension : KotlinPlugin(
 
     override fun onEnable() {
         globalEventChannel().subscribeGroupMessages {
-            "谁@我|谁AT我".toRegex() findingReply query@{ _ ->
+            """(?i)谁@我|谁AT我""".toRegex() findingReply query@{ _ ->
                 if (parentPermission.testPermission(sender.permitteeId).not()) return@query null
                 logger.info("Query At For ${sender.render()}")
                 val key = subject.id xor sender.id
