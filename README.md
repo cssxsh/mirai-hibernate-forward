@@ -17,3 +17,7 @@
 
 1. 从 [Releases](https://github.com/cssxsh/mirai-hibernate-forward/releases) 下载 `mirai2.jar`
 2. 将其放入 `plugins` 文件夹中
+
+## [爱发电](https://afdian.net/@cssxsh)
+
+![afdian](.github/afdian.jpg)
