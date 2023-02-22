@@ -72,7 +72,7 @@ public object HibernateForwardExtension : KotlinPlugin(
 
                 records.toForwardMessage(subject)
             }
-            """谁撤销了""".toRegex() findingReply query@{ _ ->
+            """(?i)谁撤回了|谁撤销了""".toRegex() findingReply query@{ _ ->
                 if (parentPermission.testPermission(sender.permitteeId).not()) return@query null
                 logger.info("Query Recall For ${subject.render()}")
                 val record = records(group = subject, since = recall[subject.id] ?: Int.MAX_VALUE).use { stream ->
@@ -82,11 +82,11 @@ public object HibernateForwardExtension : KotlinPlugin(
                 } ?: return@query null
                 recall[subject.id] = record.time
 
-                val prev = MiraiHibernateRecorder[subject, record.time - 900, record.time - 1]
-                val next = MiraiHibernateRecorder[subject, record.time, record.time + 900]
+                val prev = MiraiHibernateRecorder[subject, record.time - 300, record.time - 1]
+                val next = MiraiHibernateRecorder[subject, record.time, record.time + 300]
                 val records = buildList {
-                    addAll(prev.subList(0, prev.size.coerceAtMost(9)).asReversed())
-                    addAll(next.asReversed().subList(0, next.size.coerceAtMost(9)))
+                    addAll(prev.subList(0, prev.size.coerceAtMost(3)).asReversed())
+                    addAll(next.asReversed().subList(0, next.size.coerceAtMost(3)))
                 }
 
                 recall[subject.id] = records.minOfOrNull { it.time } ?: record.time
