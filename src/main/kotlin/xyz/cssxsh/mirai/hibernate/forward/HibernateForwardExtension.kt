@@ -1,6 +1,6 @@
 package xyz.cssxsh.mirai.hibernate.forward
 
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.*
 import net.mamoe.mirai.console.permission.PermissionService.Companion.testPermission
 import net.mamoe.mirai.console.permission.PermitteeId.Companion.permitteeId
 import net.mamoe.mirai.console.plugin.jvm.*
@@ -18,7 +18,7 @@ public object HibernateForwardExtension : KotlinPlugin(
     JvmPluginDescription(
         id = "xyz.cssxsh.mirai.plugin.mirai-hibernate-forward",
         name = "mirai-hibernate-forward",
-        version = "0.0.2",
+        version = "0.1.0",
     ) {
         author("cssxsh")
 
@@ -53,7 +53,7 @@ public object HibernateForwardExtension : KotlinPlugin(
                 if (parentPermission.testPermission(sender.permitteeId).not()) return@query null
                 logger.info("Query At For ${sender.render()}")
                 val key = subject.id xor sender.id
-                val record = records(group = subject, since = at[key] ?: Int.MAX_VALUE).use { stream ->
+                val record = records(group = subject, since = at[key] ?: time).use { stream ->
                     stream.filter { record ->
                         val chain = record.toMessageChain()
                         chain.findIsInstance<At>()?.target == sender.id
@@ -75,9 +75,9 @@ public object HibernateForwardExtension : KotlinPlugin(
             """(?i)谁撤回了|谁撤销了""".toRegex() findingReply query@{ _ ->
                 if (parentPermission.testPermission(sender.permitteeId).not()) return@query null
                 logger.info("Query Recall For ${subject.render()}")
-                val record = records(group = subject, since = recall[subject.id] ?: Int.MAX_VALUE).use { stream ->
+                val record = records(group = subject, since = recall[subject.id] ?: time).use { stream ->
                     stream.filter { record ->
-                        record.recall
+                        record.recall && record.fromId != sender.id
                     }.findFirst().orElse(null)
                 } ?: return@query null
                 recall[subject.id] = record.time
