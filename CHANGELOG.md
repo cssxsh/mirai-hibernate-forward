@@ -1,3 +1,7 @@
+## v0.1.1 (23/02/19)
+
+1. feat: order by desc time
+
 ## v0.1.0 (23/02/19)
 
 1. feat: since in query
