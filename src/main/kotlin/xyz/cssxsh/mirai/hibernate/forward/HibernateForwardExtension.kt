@@ -40,7 +40,7 @@ public object HibernateForwardExtension : KotlinPlugin(
                         equal(record.get<Long>("targetId"), group.id),
                         le(record.get<Int>("time"), since)
                     )
-                    .orderBy(desc(record.get<Int>("time")))
+                    .orderBy(desc(record.get<Long>("id")))
             }.stream().onClose { session.close() }
         } catch (cause: Throwable) {
             session.close()
