@@ -1,6 +1,8 @@
 package xyz.cssxsh.mirai.hibernate.forward
 
 import kotlinx.coroutines.*
+import net.mamoe.mirai.console.permission.Permission
+import net.mamoe.mirai.console.permission.PermissionService
 import net.mamoe.mirai.console.permission.PermissionService.Companion.testPermission
 import net.mamoe.mirai.console.permission.PermitteeId.Companion.permitteeId
 import net.mamoe.mirai.console.plugin.jvm.*
@@ -28,6 +30,20 @@ public object HibernateForwardExtension : KotlinPlugin(
     private val at: MutableMap<Long, Int> = WeakHashMap()
     private val recall: MutableMap<Long, Int> = WeakHashMap()
 
+    private val queryAt: Permission by lazy {
+        PermissionService.INSTANCE.register(
+            id = permissionId(name = "query.at"),
+            description = "谁AT我",
+            parent = parentPermission)
+    }
+    private val queryRecall: Permission by lazy {
+        PermissionService.INSTANCE.register(
+            id = permissionId(name = "query.recall"),
+            description = "谁撤销了",
+            parent = parentPermission
+        )
+    }
+
     private fun records(group: Group, since: Int): Stream<MessageRecord> {
         val session = factory.openSession()
         return try {
@@ -51,7 +67,7 @@ public object HibernateForwardExtension : KotlinPlugin(
     override fun onEnable() {
         globalEventChannel().subscribeGroupMessages {
             """(?i)谁@我|谁AT我""".toRegex() findingReply query@{ _ ->
-                if (parentPermission.testPermission(sender.permitteeId).not()) return@query null
+                if (queryAt.testPermission(sender.permitteeId).not()) return@query null
                 logger.info("Query At For ${sender.render()}")
                 val key = subject.id xor sender.id
                 val record = records(group = subject, since = at[key] ?: time).use { stream ->
@@ -74,7 +90,7 @@ public object HibernateForwardExtension : KotlinPlugin(
                 records.toForwardMessage(subject)
             }
             """(?i)谁撤回了|谁撤销了""".toRegex() findingReply query@{ _ ->
-                if (parentPermission.testPermission(sender.permitteeId).not()) return@query null
+                if (queryRecall.testPermission(sender.permitteeId).not()) return@query null
                 logger.info("Query Recall For ${subject.render()}")
                 val record = records(group = subject, since = recall[subject.id] ?: time).use { stream ->
                     stream.filter { record ->
